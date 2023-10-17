@@ -1,0 +1,46 @@
+[gd_scene load_steps=8 format=3 uid="uid://d17wmvwaruscg"]
+
+[ext_resource type="Script" path="res://CharacterBody3D.cs" id="1_lxcsy"]
+[ext_resource type="Script" path="res://level.cs" id="1_suq62"]
+[ext_resource type="Script" path="res://PlayerCamera.cs" id="2_xa14i"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tot3b"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_2gywx"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1q3ff"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_q8eq7"]
+
+[node name="Level" type="Node3D"]
+script = ExtResource("1_suq62")
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+script = ExtResource("1_lxcsy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+shape = SubResource("BoxShape3D_tot3b")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D"]
+mesh = SubResource("BoxMesh_2gywx")
+skeleton = NodePath("../CollisionShape3D")
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 1, 4)
+script = ExtResource("2_xa14i")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1)
+
+[node name="Floor" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+freeze = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+transform = Transform3D(12, 0, 0, 0, 0.01, 0, 0, 0, 12, 0, -0.00699997, 0)
+shape = SubResource("BoxShape3D_1q3ff")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor/CollisionShape3D"]
+transform = Transform3D(0.5, 0, 0, 0, 300, 0, 0, 0, 0.5, 0, 0.699997, 0)
+mesh = SubResource("PlaneMesh_q8eq7")
+skeleton = NodePath("../..")
