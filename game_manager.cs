@@ -1,24 +1,17 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
-public partial class level : Node3D
+public partial class game_manager : Node
 {
+	public static List<player_info> Players = new List<player_info>();
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		//foreach(Node c in GD.())
-		{
-			//Mathf.DegToRad
-		}
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		if(Input.IsKeyPressed(Key.Escape))
-		{
-			// exit mouse
-			Input.MouseMode = Input.MouseModeEnum.Visible;
-		}
 	}
 }

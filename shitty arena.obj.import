@@ -1,0 +1,21 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://c2nx47pwfjg7l"
+path="res://.godot/imported/shitty arena.obj-e6f8dba814fd69ea26aae2a8eb79a7bd.mesh"
+
+[deps]
+
+files=["res://.godot/imported/shitty arena.obj-e6f8dba814fd69ea26aae2a8eb79a7bd.mesh"]
+
+source_file="res://shitty arena.obj"
+dest_files=["res://.godot/imported/shitty arena.obj-e6f8dba814fd69ea26aae2a8eb79a7bd.mesh", "res://.godot/imported/shitty arena.obj-e6f8dba814fd69ea26aae2a8eb79a7bd.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true

@@ -3,14 +3,47 @@ using System;
 
 public partial class CharacterBody3D : Godot.CharacterBody3D
 {
-	public const float Speed = 5.0f;
-	public const float slideMultiplier = 2.2f;
+	private float Speed = 5.0f;
+	[Export] public float walkSpeed = 7.0f;
+	[Export] public float runSpeed = 21.0f;
+	[Export] public float slideSpeed = 24.0f;
+	[Export] public float mouseSens = 0.3f;
+	[Export] public float minAngle = 50f;
+	[Export] public float maxAngle = 50f;
+	private bool isSliding = false;
 	public const float JumpVelocity = 4.5f;
 	private Camera3D camera = null;
-	//private Spatial pl_mesh = null;
+	private Node3D pl_mesh = null;
+	private Node3D camPivotX;
+	private Node3D camPivotY;	
+	
+	public override void _Ready()
+	{
+		camPivotY = GetNode<Node3D>("../Player/CamPivotY");
+		camPivotX = GetNode<Node3D>("../Player/CamPivotY/CamPivotX");
+		camera = GetNode<Camera3D>("../Player/CamPivotY/CamPivotX/Camera3D");
 
+		// testing to see 
+		if(camera == null)
+		{
+			GD.Print("cam not found");
+		}
+		else
+		{
+			GD.Print("cam found");
+		}
+		
+		pl_mesh = GetNode<Node3D>("../Player/PlayerMesh");
+
+
+		Input.MouseMode = Input.MouseModeEnum.Captured;
+
+		Speed = walkSpeed;
+	}
+
+	
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
-	public float gravity = ProjectSettings.GetSetting("physics/3d/default_gravity").AsSingle();
+	public float gravity = 10.0f;
 
 	public override void _PhysicsProcess(double delta)
 	{
@@ -28,19 +61,20 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 		// As good practice, you should replace UI actions with custom gameplay actions.
 		Vector2 inputDir = Input.GetVector("pl_mv_lft", "pl_mv_rht", "pl_mv_fwd", "pl_mv_bck");
 		Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
+		// REPLACE ABOVE WITH NEW WAY TO GET DIRECTION STUFF
+
+
 		if (direction != Vector3.Zero)
 		{
-			float mlt = 1.0f;
-			if(IsOnFloor() && Input.IsActionPressed("pl_mv_sld")) mlt = slideMultiplier;
-			velocity.X = direction.X * Speed * mlt;
-			velocity.Z = direction.Z * Speed * mlt;
+			if(IsOnFloor() && Input.IsActionPressed("pl_mv_sld")) Speed = slideSpeed;
+			velocity.X = direction.X * Speed ;
+			velocity.Z = direction.Z * Speed ;
 		}
 		else
 		{
-			float mlt = 1.0f;
-			if(IsOnFloor() && Input.IsActionPressed("pl_mv_sld")) mlt = slideMultiplier;
-			velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed * mlt);
-			velocity.Z = Mathf.MoveToward(Velocity.Z, 0, Speed * mlt);
+			if(IsOnFloor() && Input.IsActionPressed("pl_mv_sld")) Speed = slideSpeed;
+			velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed );
+			velocity.Z = Mathf.MoveToward(Velocity.Z, 0, Speed );
 		}
 
 		Velocity = velocity;
@@ -56,17 +90,17 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 		 if (@event is InputEventMouseMotion eventMouseMotion)
 		{
 			eventMouseMotion = @event as InputEventMouseMotion;
-			camPivot.RotateX(Mathf.deg2Rad(-eventMouseMotion.Relative.y * mouseSens));
-			camPivot.RotateY(Mathf.deg2Rad(-eventMouseMotion.Relative.x * mouseSens));
+			camPivotX.RotateX(Mathf.DegToRad(-eventMouseMotion.Relative.Y * mouseSens));
+			camPivotY.RotateY(Mathf.DegToRad(-eventMouseMotion.Relative.X * mouseSens));
+			
+			Vector3 cameraRotation = camPivotX.RotationDegrees;
+			cameraRotation.X = Mathf.Clamp(cameraRotation.X, -minAngle, maxAngle);
+			cameraRotation.Z = Mathf.Clamp(cameraRotation.Z, 0, 0);
 
-
-			Vector3 cameraRotation = camPivot.RotationDegrees;
-			cameraRotation.x = Mathf.Clamp(cameraRotation.x, -minAngle, maxAngle);
-			cameraRotation.z = Mathf.Clamp(cameraRotation.z, 0, 0);
-
-			camPivot.RotationDegrees = cameraRotation;
-			GD.Print(new Vector3(cameraRotation.x, cameraRotation.y, cameraRotation.z));
+			camPivotX.RotationDegrees = cameraRotation;
+			GD.Print(new Vector3(cameraRotation.X, cameraRotation.Y, cameraRotation.Z));
 			// why :(
+			// yay visual studio!! :)
 		}
 	}
 }

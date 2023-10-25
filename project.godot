@@ -11,13 +11,21 @@ config_version=5
 [application]
 
 config/name="Learning Godot"
-run/main_scene="res://level.tscn"
+run/main_scene="res://multiplayer.tscn"
 config/features=PackedStringArray("4.1", "C#", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+GameManager="*res://game_manager.cs"
 
 [dotnet]
 
 project/assembly_name="Learning Godot"
+
+[filesystem]
+
+import/fbx/enabled=false
 
 [input]
 
