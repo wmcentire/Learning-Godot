@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 public partial class multiplayerControl : Control
 {
@@ -35,6 +36,7 @@ public partial class multiplayerControl : Control
     private void ConnectedToServer()
     {
         GD.Print("CONNECTED TO SERVER");
+        RpcId(1,"SendPlayerInfo", GetNode<LineEdit>("Net/NameCon/Name").Text,Multiplayer.GetUniqueId());
     }
     /// <summary>
     /// Runs when a player disconnects and runs on all peers
@@ -77,6 +79,10 @@ public partial class multiplayerControl : Control
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
     private void StartGame()
     {
+        foreach(var item in game_manager.Players)
+        {
+            GD.Print(item.name + " is playing");
+        }
         var scene = ResourceLoader.Load<PackedScene>("res://arena_scene.tscn").Instantiate<Node>();
         GetTree().Root.AddChild(scene);
         this.Hide();
@@ -95,6 +101,8 @@ public partial class multiplayerControl : Control
 
         Multiplayer.MultiplayerPeer = peer;
         GD.Print("WAITING FOR PLAYERS...");
+
+        SendPlayerInfo(GetNode<LineEdit>("Net/NameCon/Name").Text, 1);
     }
 
     public void _on_join_button_down()
@@ -108,6 +116,7 @@ public partial class multiplayerControl : Control
     }
 
     // sends player info
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
     private void SendPlayerInfo(string name, int id)
     {
         player_info playerInfo = new player_info()
@@ -119,6 +128,13 @@ public partial class multiplayerControl : Control
         };
         if(!game_manager.Players.Contains(playerInfo)) {
             game_manager.Players.Add(playerInfo);
+        }
+        if (Multiplayer.IsServer())
+        {
+            foreach(var item in game_manager.Players)
+            {
+                Rpc("SendPlayerInfo",name, id);
+            }
         }
     }
 

@@ -40,6 +40,18 @@ layout_mode = 2
 placeholder_text = "127.0.0.1"
 expand_to_text_length = true
 
+[node name="NameCon" type="HBoxContainer" parent="UI/Net"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="UI/Net/NameCon"]
+layout_mode = 2
+text = "Display Name: "
+
+[node name="Name" type="LineEdit" parent="UI/Net/NameCon"]
+layout_mode = 2
+placeholder_text = "Name"
+expand_to_text_length = true
+
 [connection signal="button_down" from="UI/Net/Options/Host" to="UI" method="_on_host_button_down"]
 [connection signal="button_down" from="UI/Net/Options/Join" to="UI" method="_on_join_button_down"]
 [connection signal="button_down" from="UI/Net/Options/StartGame" to="UI" method="_on_start_game_button_down"]
