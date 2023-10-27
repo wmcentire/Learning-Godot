@@ -12,7 +12,7 @@ public partial class Scene_Manager : Node
 		foreach(var item in game_manager.Players)
 		{
 			level currentPlayer = playerScene.Instantiate<level>();
-			currentPlayer.Name = item.name;
+			currentPlayer.Name = item.Id.ToString();
 			AddChild(currentPlayer);
 			foreach (Node3D spawnPoint in GetTree().GetNodesInGroup("PlayerSpawnPoints"))
 			{
@@ -21,6 +21,7 @@ public partial class Scene_Manager : Node
 					currentPlayer.GlobalPosition = spawnPoint.GlobalPosition;
 				}
 			}
+			index++;
 		}
 	}
 

@@ -16,12 +16,16 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 	private Node3D pl_mesh = null;
 	private Node3D camPivotX;
 	private Node3D camPivotY;	
-	
+
 	public override void _Ready()
 	{
-		camPivotY = GetNode<Node3D>("../Player/CamPivotY");
-		camPivotX = GetNode<Node3D>("../Player/CamPivotY/CamPivotX");
-		camera = GetNode<Camera3D>("../Player/CamPivotY/CamPivotX/Camera3D");
+		// THIS PART IS BROKEN
+		// PLEASE FIX
+		GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer").SetMultiplayerAuthority(int.Parse(Name));
+
+		camPivotY = GetNode<Node3D>("/CamPivotY");
+		camPivotX = GetNode<Node3D>("/CamPivotY/CamPivotX");
+		camera = GetNode<Camera3D>("/CamPivotY/CamPivotX/Camera3D");
 
 		// testing to see 
 		if(camera == null)
@@ -33,20 +37,28 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 			GD.Print("cam found");
 		}
 		
-		pl_mesh = GetNode<Node3D>("../Player/PlayerMesh");
+		//pl_mesh = GetNode<Node3D>("PlayerMesh");
 
 
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 
 		Speed = walkSpeed;
-	}
+        if (GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer").GetMultiplayerAuthority() == Multiplayer.GetUniqueId())
+		{
+			camera.MakeCurrent();
+		}
 
-	
-	// Get the gravity from the project settings to be synced with RigidBody nodes.
-	public float gravity = 10.0f;
+    }
+
+
+    // Get the gravity from the project settings to be synced with RigidBody nodes.
+    public float gravity = 9.8f;
 
 	public override void _PhysicsProcess(double delta)
 	{
+		if(GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer").GetMultiplayerAuthority() == Multiplayer.GetUniqueId())
+		{
+
 		Vector3 velocity = Velocity;
 		
 		// Add the gravity.
@@ -80,27 +92,31 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 		Velocity = velocity;
 		MoveAndSlide();
 		
-		
-	}
-	// Change direction based on mouse movements
-	public override void _UnhandledInput(InputEvent @event){
-		// got this code for the camera rotation from this site: 	
-		// https://godotforums.org/d/26795-solved-third-person-camera-issue
-		// I for the life of me could not figure out how to use the mouse movement for camera stuff
-		 if (@event is InputEventMouseMotion eventMouseMotion)
-		{
-			eventMouseMotion = @event as InputEventMouseMotion;
-			camPivotX.RotateX(Mathf.DegToRad(-eventMouseMotion.Relative.Y * mouseSens));
-			camPivotY.RotateY(Mathf.DegToRad(-eventMouseMotion.Relative.X * mouseSens));
-			
-			Vector3 cameraRotation = camPivotX.RotationDegrees;
-			cameraRotation.X = Mathf.Clamp(cameraRotation.X, -minAngle, maxAngle);
-			cameraRotation.Z = Mathf.Clamp(cameraRotation.Z, 0, 0);
+		}
 
-			camPivotX.RotationDegrees = cameraRotation;
-			GD.Print(new Vector3(cameraRotation.X, cameraRotation.Y, cameraRotation.Z));
-			// why :(
-			// yay visual studio!! :)
+    }
+    // Change direction based on mouse movements
+    public override void _UnhandledInput(InputEvent @event){
+        // got this code for the camera rotation from this site: 	
+        // https://godotforums.org/d/26795-solved-third-person-camera-issue
+        // I for the life of me could not figure out how to use the mouse movement for camera stuff
+        if (GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer").GetMultiplayerAuthority() == Multiplayer.GetUniqueId())
+        {
+            if (@event is InputEventMouseMotion eventMouseMotion)
+			{
+				eventMouseMotion = @event as InputEventMouseMotion;
+				camPivotX.RotateX(Mathf.DegToRad(-eventMouseMotion.Relative.Y * mouseSens));
+				camPivotY.RotateY(Mathf.DegToRad(-eventMouseMotion.Relative.X * mouseSens));
+
+				Vector3 cameraRotation = camPivotX.RotationDegrees;
+				cameraRotation.X = Mathf.Clamp(cameraRotation.X, -minAngle, maxAngle);
+				cameraRotation.Z = Mathf.Clamp(cameraRotation.Z, 0, 0);
+
+				camPivotX.RotationDegrees = cameraRotation;
+				GD.Print(new Vector3(cameraRotation.X, cameraRotation.Y, cameraRotation.Z));
+				// why :(
+				// yay visual studio!! :)
+			}
 		}
 	}
 }

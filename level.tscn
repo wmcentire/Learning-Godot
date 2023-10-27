@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://d17wmvwaruscg"]
+[gd_scene load_steps=7 format=3 uid="uid://d17wmvwaruscg"]
 
 [ext_resource type="Script" path="res://CharacterBody3D.cs" id="1_lxcsy"]
 [ext_resource type="Script" path="res://level.cs" id="1_suq62"]
@@ -7,6 +7,16 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_tot3b"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_2gywx"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_8iial"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/sync = true
+properties/0/watch = false
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/sync = true
+properties/1/watch = false
 
 [node name="Level" type="Node3D"]
 script = ExtResource("1_suq62")
@@ -28,3 +38,6 @@ skeleton = NodePath("../CollisionShape3D")
 [node name="Camera3D" type="Camera3D" parent="Player/CamPivotY/CamPivotX"]
 transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 1, 4)
 script = ExtResource("2_xa14i")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Player"]
+replication_config = SubResource("SceneReplicationConfig_8iial")

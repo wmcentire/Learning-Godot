@@ -133,7 +133,7 @@ public partial class multiplayerControl : Control
         {
             foreach(var item in game_manager.Players)
             {
-                Rpc("SendPlayerInfo",name, id);
+                Rpc("SendPlayerInfo",item.name, item.Id);
             }
         }
     }
