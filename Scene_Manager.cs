@@ -11,7 +11,7 @@ public partial class Scene_Manager : Node
 		int index = 0;
 		foreach(var item in game_manager.Players)
 		{
-			level currentPlayer = playerScene.Instantiate<level>();
+			CharacterBody3D currentPlayer = playerScene.Instantiate<CharacterBody3D>();
 			currentPlayer.Name = item.Id.ToString();
 			AddChild(currentPlayer);
 			foreach (Node3D spawnPoint in GetTree().GetNodesInGroup("PlayerSpawnPoints"))
