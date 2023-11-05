@@ -106,7 +106,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 		}
 		else
 		{
-			GlobalPosition = GlobalPosition.Lerp(syncPos,.8f);
+			GlobalPosition = GlobalPosition.Lerp(syncPos,.5f);
 		}
 		
 
@@ -149,12 +149,13 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
                 GD.Print(new Vector3(cameraRotation.X, cameraRotation.Y, cameraRotation.Z));
 
 				//GlobalRotation = new Vector3(cameraRotation.X, 0f,0f);
-				syncRot = GlobalRotation;
             }
+            syncRot = GlobalRotation;
+
         }
         else
 		{
-            GlobalRotation = GlobalRotation.Lerp(syncRot, .8f);
+            GlobalRotation = GlobalRotation.Lerp(syncRot, .5f);
 
         }
     }
