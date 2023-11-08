@@ -8,4 +8,5 @@ public partial class player_info
 	public int health;
 	public int kills;
 	public int deaths;
+	public int points;
 }

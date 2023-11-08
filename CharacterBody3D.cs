@@ -16,10 +16,19 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 	private Node3D pl_mesh = null;
 	private Node3D camPivotX;
 	private Node3D camPivotY;
+	private IWeapon phys_gun;
 	[Export] private NodePath pathY;
 	[Export] private NodePath pathX;
 	[Export] private NodePath pathCam;
 	[Export] private NodePath pathMesh;
+	[Export] private NodePath physGun;
+
+
+	// gameplay values
+	private int health;
+	private int score;
+	private int kills;
+	private int deaths;
 
 	private Vector3 syncPos = new Vector3(0,0,0);
 	private Vector3 syncRot = new Vector3(0,0,0);
@@ -31,11 +40,13 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 		GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer").SetMultiplayerAuthority(int.Parse(Name));
 
 		camPivotY = GetNode<Node3D>(pathY);
-		camPivotX = GetNode<Node3D>(pathX);
+//		camPivotX = GetNode<Node3D>(pathX);
 		camera = GetNode<Camera3D>(pathCam);
+        phys_gun = (IWeapon)GetNode<tLauncher>(physGun);
 
-		// testing to see 
-		if(camera == null)
+
+        // testing to see 
+        if (camera == null)
 		{
 			GD.Print("cam not found");
 		}
@@ -44,7 +55,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 			GD.Print("cam found");
 		}
 		
-		pl_mesh = GetNode<Node3D>(pathMesh);
+		//pl_mesh = GetNode<Node3D>(pathMesh);
 
 
 		Input.MouseMode = Input.MouseModeEnum.Captured;
@@ -85,6 +96,11 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 			if (Input.IsActionPressed("pl_rt_cm"))
 			{
 
+			}
+
+			if (Input.IsActionPressed("pl_sht"))
+			{
+				phys_gun.shoot();
 			}
 
 			if (direction != Vector3.Zero)
