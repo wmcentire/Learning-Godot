@@ -3,7 +3,7 @@ using System;
 
 public partial class CharacterBody3D : Godot.CharacterBody3D
 {
-	private float Speed = 5.0f;
+	private float Speed = 10.0f;
 	[Export] public float walkSpeed = 7.0f;
 	[Export] public float runSpeed = 21.0f;
 	[Export] public float slideSpeed = 24.0f;
@@ -11,7 +11,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 	[Export] public float minAngle = 50f;
 	[Export] public float maxAngle = 50f;
 	private bool isSliding = false;
-	public const float JumpVelocity = 4.5f;
+	public const float JumpVelocity = 10.0f;
 	private Camera3D camera = null;
 	private Node3D pl_mesh = null;
 	private Node3D camPivotX;
@@ -25,6 +25,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 
 
 	// gameplay values
+	private string name;
 	private int health;
 	private int score;
 	private int kills;
@@ -32,6 +33,11 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 
 	private Vector3 syncPos = new Vector3(0,0,0);
 	private Vector3 syncRot = new Vector3(0,0,0);
+
+	public void SetName(string Name)
+	{
+		name = Name;
+	}
 
 	public override void _Ready()
 	{
@@ -70,7 +76,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 
 
     // Get the gravity from the project settings to be synced with RigidBody nodes.
-    public float gravity = 9.8f;
+    public float gravity = 19.8f;
 
 	public override void _PhysicsProcess(double delta)
 	{
@@ -100,7 +106,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 
 			if (Input.IsActionPressed("pl_sht"))
 			{
-				phys_gun.shoot();
+				phys_gun.setShoot(true);
 			}
 
 			if (direction != Vector3.Zero)
@@ -119,12 +125,16 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 			Velocity = velocity;
 			MoveAndSlide();
 			syncPos = GlobalPosition;
-		}
-		else
+            syncRot = GlobalRotation;
+
+        }
+        else
 		{
 			GlobalPosition = GlobalPosition.Lerp(syncPos,.5f);
-		}
-		
+            GlobalRotation = GlobalRotation.Lerp(syncRot, .5f);
+
+        }
+
 
     }
     // Change direction based on mouse movements
@@ -134,22 +144,6 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
         // I for the life of me could not figure out how to use the mouse movement for camera stuff
         if (GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer").GetMultiplayerAuthority() == Multiplayer.GetUniqueId())
         {
-            // OLD 3RD PERSON CAMERA STUFF
-            //if (@event is InputEventMouseMotion eventMouseMotion)
-            //{
-            //	eventMouseMotion = @event as InputEventMouseMotion;
-            //	camPivotX.RotateX(Mathf.DegToRad(-eventMouseMotion.Relative.Y * mouseSens));
-            //	camPivotY.RotateY(Mathf.DegToRad(-eventMouseMotion.Relative.X * mouseSens));
-
-            //	Vector3 cameraRotation = camPivotX.RotationDegrees;
-            //	cameraRotation.X = Mathf.Clamp(cameraRotation.X, -minAngle, maxAngle);
-            //	cameraRotation.Z = Mathf.Clamp(cameraRotation.Z, 0, 0);
-
-            //	camPivotX.RotationDegrees = cameraRotation;
-            //	GD.Print(new Vector3(cameraRotation.X, cameraRotation.Y, cameraRotation.Z));
-            //	// why :(
-            //	// yay visual studio!! :)
-            //}
 
             if (@event is InputEventMouseMotion eventMouseMotion)
             {
@@ -162,7 +156,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
                 cameraRotation.Z = Mathf.Clamp(cameraRotation.Z, 0, 0);
 
                 camPivotY.RotationDegrees = cameraRotation;
-                GD.Print(new Vector3(cameraRotation.X, cameraRotation.Y, cameraRotation.Z));
+                //GD.Print(new Vector3(cameraRotation.X, cameraRotation.Y, cameraRotation.Z));
 
 				//GlobalRotation = new Vector3(cameraRotation.X, 0f,0f);
             }
@@ -171,8 +165,6 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
         }
         else
 		{
-            GlobalRotation = GlobalRotation.Lerp(syncRot, .5f);
-
         }
     }
 }

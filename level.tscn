@@ -20,6 +20,10 @@ properties/1/path = NodePath(".:syncRot")
 properties/1/spawn = true
 properties/1/sync = true
 properties/1/watch = false
+properties/2/path = NodePath("CollisionShape3D/train_gun:didShoot")
+properties/2/spawn = true
+properties/2/sync = true
+properties/2/watch = false
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_lxcsy")

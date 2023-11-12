@@ -12,9 +12,13 @@ public partial class Scene_Manager : Node
 		foreach(var item in game_manager.Players)
 		{
 			CharacterBody3D currentPlayer = playerScene.Instantiate<CharacterBody3D>();
-			currentPlayer.Name = item.Id.ToString();
+			currentPlayer.Name = item.Id.ToString(); // giving the player a multiplayer id
+
+			currentPlayer.SetName(item.name); // setting the display name
+
 			AddChild(currentPlayer);
-			foreach (Node3D spawnPoint in GetTree().GetNodesInGroup("PlayerSpawnPoints"))
+			// spawns in a character in each session for each player
+			foreach (Node3D spawnPoint in GetTree().GetNodesInGroup("PlayerSpawnPoints")) 
 			{
 				if(int.Parse(spawnPoint.Name) == index)
 				{

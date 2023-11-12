@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://jdk5fjoitc64"]
+
+[ext_resource type="Script" path="res://phys_hit.cs" id="1_xlupo"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_iln36"]
+radius = 1.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_akr5i"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x4fcr"]
+albedo_color = Color(0, 0.741176, 0.505882, 0.494118)
+
+[node name="Phys_Hit" type="Area3D"]
+script = ExtResource("1_xlupo")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_iln36")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CollisionShape3D"]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+mesh = SubResource("SphereMesh_akr5i")
+surface_material_override/0 = SubResource("StandardMaterial3D_x4fcr")

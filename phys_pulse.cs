@@ -1,25 +1,20 @@
 using Godot;
 using System;
 
-public partial class phys_pulse : Node3D
+public partial class phys_pulse : Area3D
 {
 	[Export]
 	private float force = 10;
-	private float instTime = 1.5f;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		
+		GD.Print("created pulse");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		instTime -= 0.25f;
-		if(instTime <= 0 )
-		{
-			this.Dispose();
-		}
+		
 	}
 
 	private void _on_area_3d_body_entered(ILaunchable obj)
