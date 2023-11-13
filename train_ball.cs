@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class train_ball : Node3D , ILaunchable
+public partial class train_ball : RigidBody3D , ILaunchable
 {
     [Export]
     private NodePath _path;
@@ -18,8 +18,8 @@ public partial class train_ball : Node3D , ILaunchable
     public void Launch(Vector3 velocity)
     {
         GD.Print("LLAUNCHED");
-        RigidBody3D rb = GetNode<RigidBody3D>(_path);
-        rb.ApplyCentralImpulse(velocity);
+        //RigidBody3D rb = GetNode<RigidBody3D>(_path);
+        ApplyCentralImpulse(velocity);
     }
     /// <summary>
     /// this is just so the ILaunchable actually works in my logic, ignore please

@@ -11,6 +11,7 @@ albedo_color = Color(0.890196, 0, 0.309804, 1)
 [node name="train_gun" type="Node3D"]
 script = ExtResource("1_nid7f")
 Shot = ExtResource("2_uydxv")
+reloadTime = 0.2
 shotPath = NodePath("shot_nstnc")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]

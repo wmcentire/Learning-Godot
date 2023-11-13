@@ -6,7 +6,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 	private float Speed = 10.0f;
 	[Export] public float walkSpeed = 7.0f;
 	[Export] public float runSpeed = 21.0f;
-	[Export] public float slideSpeed = 24.0f;
+	[Export] public float slideSpeed = 14.0f;
 	[Export] public float mouseSens = 0.3f;
 	[Export] public float minAngle = 50f;
 	[Export] public float maxAngle = 50f;
@@ -82,7 +82,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 	{
 		if(GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer").GetMultiplayerAuthority() == Multiplayer.GetUniqueId())
 		{
-
+			float actlSpd = Speed;
 			Vector3 velocity = Velocity;
 		
 			// Add the gravity.
@@ -111,15 +111,15 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 
 			if (direction != Vector3.Zero)
 			{
-				if(IsOnFloor() && Input.IsActionPressed("pl_mv_sld")) Speed = slideSpeed;
-				velocity.X = direction.X * Speed ;
-				velocity.Z = direction.Z * Speed ;
+				if(IsOnFloor() && Input.IsActionPressed("pl_mv_sld")) actlSpd = slideSpeed;
+				velocity.X = direction.X * actlSpd ;
+				velocity.Z = direction.Z * actlSpd ;
 			}
 			else
 			{
-				if(IsOnFloor() && Input.IsActionPressed("pl_mv_sld")) Speed = slideSpeed;
-				velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed );
-				velocity.Z = Mathf.MoveToward(Velocity.Z, 0, Speed );
+				if(IsOnFloor() && Input.IsActionPressed("pl_mv_sld")) actlSpd = slideSpeed;
+				velocity.X = Mathf.MoveToward(Velocity.X, 0, actlSpd );
+				velocity.Z = Mathf.MoveToward(Velocity.Z, 0, actlSpd );
 			}
 
 			Velocity = velocity;

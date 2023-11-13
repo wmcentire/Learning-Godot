@@ -11,7 +11,11 @@ radius = 1.0
 albedo_color = Color(0, 0.741176, 0.505882, 0.494118)
 
 [node name="Phys_Hit" type="Area3D"]
+collision_layer = 2
+collision_mask = 2
 script = ExtResource("1_xlupo")
+force = 25.0
+instTime = 0.02
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_iln36")
@@ -20,3 +24,5 @@ shape = SubResource("SphereShape3D_iln36")
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 mesh = SubResource("SphereMesh_akr5i")
 surface_material_override/0 = SubResource("StandardMaterial3D_x4fcr")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

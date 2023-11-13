@@ -1,19 +1,28 @@
-[gd_scene load_steps=4 format=3 uid="uid://b1l7g32p2pgdy"]
+[gd_scene load_steps=6 format=3 uid="uid://b1l7g32p2pgdy"]
+
+[ext_resource type="Script" path="res://train_ball.cs" id="1_7hkxr"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_v6po3"]
+friction = 0.3
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_kc8am"]
+size = Vector3(3.96504, 1.4411, 1.78273)
 
 [sub_resource type="BoxMesh" id="BoxMesh_twlpo"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ndf00"]
 albedo_color = Color(0.603922, 0.172549, 0.823529, 1)
 
-[node name="train_ball" type="Node3D"]
+[node name="train_ball" type="RigidBody3D"]
+collision_layer = 7
+collision_mask = 7
+physics_material_override = SubResource("PhysicsMaterial_v6po3")
+script = ExtResource("1_7hkxr")
 
-[node name="RigidBody3D" type="RigidBody3D" parent="."]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_kc8am")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(4, 0, 0, 0, 1.45, 0, 0, 0, 2, 0, 0, 0)
 mesh = SubResource("BoxMesh_twlpo")
 surface_material_override/0 = SubResource("StandardMaterial3D_ndf00")

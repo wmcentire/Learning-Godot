@@ -42,13 +42,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 0)
 
 [node name="train_ball" parent="." instance=ExtResource("4_dogo5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.137914, -8.48017, -2.41084)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.137914, -8.48017, -9.19515)
+
+[node name="train_ball5" parent="." instance=ExtResource("4_dogo5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.804107, -8.48017, 3.05923)
 
 [node name="train_ball2" parent="." instance=ExtResource("4_dogo5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.68269, -8.48017, 8.43596)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.86061, -8.48017, 8.43596)
 
 [node name="train_ball3" parent="." instance=ExtResource("4_dogo5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.444095, -8.48017, 2.86254)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.444095, -8.48017, -1.4631)
 
 [node name="train_ball4" parent="." instance=ExtResource("4_dogo5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.85477, -8.14123, 8.02818)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.03914, -8.14123, 14.0206)

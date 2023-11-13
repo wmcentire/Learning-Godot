@@ -48,7 +48,6 @@ public partial class tLauncher : Node3D, IWeapon
 	
 	public void shoot()
 	{
-		// need to do more logic
 		if (readyToFire)
 		{
 			didShoot = false;
@@ -58,13 +57,10 @@ public partial class tLauncher : Node3D, IWeapon
 			Area3D shot = Shot.Instantiate<Area3D>(); // enables hitbox
 			GetTree().Root.AddChild(shot);
 			shot.GlobalTransform = shotLoc.GlobalTransform;
-
-
-			GD.Print("Shooting");
+			
         }
         else
 		{
-			GD.Print("Cannot Fire");
 		}
 	}
 
