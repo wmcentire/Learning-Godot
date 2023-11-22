@@ -51,7 +51,7 @@ public partial class phys_hit : Area3D
 
         if (reference != null)
         {
-            GD.Print("ye");
+            //GD.Print("ye");
             //	launch the train in a direction with calculations and shit
             Vector3 velocity = new Vector3(0, 0, 0);
             Vector3 objPos = reference.getGlobalLoc();
@@ -65,7 +65,7 @@ public partial class phys_hit : Area3D
         }
         else
         {
-            GD.Print("nah");
+            //GD.Print("nah");
         }
     }
 }

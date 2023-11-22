@@ -31,11 +31,13 @@ properties/3/watch = false
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_lxcsy")
+IFrameLen = 2.0
 pathY = NodePath("CamPivotY")
 pathX = NodePath("")
 pathCam = NodePath("CamPivotY/SpringArm3D/Camera3D")
 physGun = NodePath("CollisionShape3D/train_gun")
 namePath = NodePath("Label3D")
+health = 100
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_tot3b")

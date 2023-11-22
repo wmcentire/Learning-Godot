@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
 public partial class game_manager : Node
 {
@@ -36,6 +37,19 @@ public partial class game_manager : Node
 				mouseState = 0;
             }
 
+        }
+    }
+
+    public static void AddPoints(string id)
+    {
+        GD.Print("Game Manager adding points");
+        foreach(player_info p in Players)
+        {
+            if(id == p.Id.ToString())
+            {
+                p.points++;
+                GD.Print("Player " + id + " gained a point.");
+            }
         }
     }
 }

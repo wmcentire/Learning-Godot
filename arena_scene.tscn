@@ -29,9 +29,11 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ty7kd")
 shape = SubResource("ConcavePolygonShape3D_wx1ak")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Arena"]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0.0162575, 0)
-light_energy = 3.743
-omni_range = 39.2006
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0162575, 0)
+light_energy = 11.972
+light_indirect_energy = 1.457
+light_volumetric_fog_energy = 1.152
+omni_range = 30.4918
 
 [node name="PlayerSpawnPoints" type="Node3D" parent="."]
 

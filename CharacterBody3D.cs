@@ -10,6 +10,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 	[Export] public float mouseSens = 0.3f;
 	[Export] public float minAngle = 50f;
 	[Export] public float maxAngle = 50f;
+	[Export] public float IFrameLen = 1.5f;
 	
 	private Vector3 camForm;
 	private bool isSliding = false;
@@ -20,6 +21,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 	private Node3D camPivotY;
 	private IWeapon phys_gun;
 	private Label3D nameTag;
+	private float IFrames = 0;
 
 	// relative pathways
     [Export] private NodePath pathY;
@@ -93,13 +95,37 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 
 	public void playerDamage(int damage, string id)
 	{
-		health -= damage;
+		// testing
+		//if(id != this.Name)
+		//{
+		//          Rpc("AddPoints", id);
+
+		//}
+
+		// \/ intended \/
+		if (IFrames <= 0)
+		{
+			IFrames = IFrameLen;
+			GD.Print("Invincibility Frames set to " + IFrames);
+			GD.Print("Player " + this.Name + " was damaged by " + id + " for " + damage + " damage!");
+
+			health -= damage;
+			if (health <= 0)
+			{
+				if(id != this.Name)
+				{
+                    Rpc("AddPoints", id);
+
+                }
+            }
+		}
+		else
+		{
+			GD.Print("Invincible for " + IFrames + " seconds");
+		}
 	}
 
-	private void isKilled(string id)
-	{
-
-	}
+    
 
     // Get the gravity from the project settings to be synced with RigidBody nodes.
     public float gravity = 19.8f;
@@ -174,7 +200,12 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 	// putting all the non-physics stuff that generally needs to be dealt with in here
     public override void _Process(double delta)
     {
-
+		
+		if(IFrames > 0)
+		{
+			IFrames -= (float)delta;
+			GD.Print(IFrames);
+		}
     }
 
     // Change direction based on mouse movements
@@ -208,4 +239,10 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 
         }
     }
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+	public void AddPoints(string id)
+	{
+		game_manager.AddPoints(id);
+	}
 }

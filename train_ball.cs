@@ -7,6 +7,8 @@ public partial class train_ball : RigidBody3D , ILaunchable
     private NodePath _path;
     [Export]
     private string lastTagged;
+    [Export]
+    private float minDmgVel = 15f;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -15,40 +17,51 @@ public partial class train_ball : RigidBody3D , ILaunchable
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+
 	}
 
     // when it hits a player
     public void _on_body_entered(Node node)
     {
-        GD.Print("COLLISION");
+        bool isPlayerCol = false;
         // check the velocity of self
-        if(this.LinearVelocity.Length() > 15f)
+        if (this.LinearVelocity.Length() > minDmgVel)
         {
             // check to see if it hit the player
             CharacterBody3D player = node as CharacterBody3D;
             if(player != null)
             {
-                // player.damage(lastTagged);       // IMPLEMENT DAMAGE FUNC IN PLAYER
-                GD.Print("Player " + player.Name + " was damaged by " + lastTagged);
+                int damage = 0;
+                // Damage calculations
+                damage = (int)(LinearVelocity.Length());
+                player.playerDamage(damage , lastTagged);       
+                isPlayerCol = true;
+            }
+            if (!isPlayerCol)
+            {
+                // if a train hits another train and that train kills a player,
+                // still get the credit by TAG TRANSFERS!
+                train_ball tb = node as train_ball;
+                if (tb != null)
+                {
+                    tb.lastTagged = lastTagged;
+                    //GD.Print("Transfered tag " + lastTagged);
+                }
             }
         }
-        train_ball tb = node as train_ball;
-        if(tb != null)
-        {
-            tb.lastTagged = lastTagged;
-            GD.Print("Transfered tag " + lastTagged);
-        }
+        
+        
     }
 
     public void _on_body_shape_entered(Rid body_rid, Node body, int body_shape_index, int local_shape_index)
     {
-        GD.Print("COLLISION");
-
+        //GD.Print("COLLISION");
+        // IGNOR THIS FUNCTION IT IS MEANING LESS
     }
 
     public void Launch(Vector3 velocity, string id)
     {
-        GD.Print("LLAUNCHED BY: " + id);
+        //GD.Print("LLAUNCHED BY: " + id);
         lastTagged = id;
         ApplyCentralImpulse(velocity);
     }
@@ -60,4 +73,11 @@ public partial class train_ball : RigidBody3D , ILaunchable
     {
         return GlobalPosition;
     }
+
+    // for some reason the rigidbody collision signals are not working,
+    // so I'm going to be using this instead for now.
+    // IT TURNS OUT CONTACT MONITER IS OFF BY DEFAULT SO THAT'S FIXED NOW
+    // IGNORE THE COMMENTS ABOUT IT NOT WORKING
+
+    
 }
