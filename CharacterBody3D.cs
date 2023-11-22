@@ -10,6 +10,8 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 	[Export] public float mouseSens = 0.3f;
 	[Export] public float minAngle = 50f;
 	[Export] public float maxAngle = 50f;
+	
+	private Vector3 camForm;
 	private bool isSliding = false;
 	public const float JumpVelocity = 10.0f;
 	private Camera3D camera = null;
@@ -17,26 +19,37 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 	private Node3D camPivotX;
 	private Node3D camPivotY;
 	private IWeapon phys_gun;
-	[Export] private NodePath pathY;
+	private Label3D nameTag;
+
+	// relative pathways
+    [Export] private NodePath pathY;
 	[Export] private NodePath pathX;
 	[Export] private NodePath pathCam;
 	[Export] private NodePath pathMesh;
 	[Export] private NodePath physGun;
-
+	[Export] private NodePath namePath;
 
 	// gameplay values
-	private string name;
-	private int health;
-	private int score;
-	private int kills;
-	private int deaths;
+	[Export]
+	private string dispname;
+    [Export]
+    private int health;
+    [Export]
+    private int score;
+    [Export]
+    private int kills;
+    [Export]
+    private int deaths;
 
+	// synced positions
 	private Vector3 syncPos = new Vector3(0,0,0);
 	private Vector3 syncRot = new Vector3(0,0,0);
+    private Vector3 camFormUniversal = new Vector3(0,0,0);
 
-	public void SetName(string Name)
+
+    public void SetName(string Name)
 	{
-		name = Name;
+		dispname = Name;
 	}
 
 	public override void _Ready()
@@ -49,7 +62,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 //		camPivotX = GetNode<Node3D>(pathX);
 		camera = GetNode<Camera3D>(pathCam);
         phys_gun = (IWeapon)GetNode<tLauncher>(physGun);
-
+		phys_gun.setPID(Name);
 
         // testing to see 
         if (camera == null)
@@ -60,24 +73,38 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 		{
 			GD.Print("cam found");
 		}
-		
-		//pl_mesh = GetNode<Node3D>(pathMesh);
-
 
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 
-		Speed = walkSpeed;
+		
+
+
+        Speed = walkSpeed;
         if (GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer").GetMultiplayerAuthority() == Multiplayer.GetUniqueId())
 		{
 			camera.MakeCurrent();
-		}
+			//nameTag.Hide();
+            camForm = new Vector3(camera.GlobalPosition.X, camera.GlobalPosition.Y, camera.GlobalPosition.Z);
 
+        }
+        //nameTag = GetNode<Label3D>(namePath);
+        //nameTag.Text = dispname;
     }
 
+	public void playerDamage(int damage, string id)
+	{
+		health -= damage;
+	}
+
+	private void isKilled(string id)
+	{
+
+	}
 
     // Get the gravity from the project settings to be synced with RigidBody nodes.
     public float gravity = 19.8f;
 
+	// this is where the player movement and other physics is kept
 	public override void _PhysicsProcess(double delta)
 	{
 		if(GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer").GetMultiplayerAuthority() == Multiplayer.GetUniqueId())
@@ -126,17 +153,30 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 			MoveAndSlide();
 			syncPos = GlobalPosition;
             syncRot = GlobalRotation;
-
+			camFormUniversal = camForm;
         }
         else
 		{
+			// syncing positions and rotations
 			GlobalPosition = GlobalPosition.Lerp(syncPos,.5f);
             GlobalRotation = GlobalRotation.Lerp(syncRot, .5f);
+			camForm = camForm.Lerp(camFormUniversal,.5f);
 
+			// nametags always facing player
+			//Vector3 tagDir = camForm - nameTag.GlobalPosition;
+
+			//nameTag.GlobalRotation = tagDir.Normalized();
         }
 
 
     }
+
+	// putting all the non-physics stuff that generally needs to be dealt with in here
+    public override void _Process(double delta)
+    {
+
+    }
+
     // Change direction based on mouse movements
     public override void _UnhandledInput(InputEvent @event){
         // got this code for the camera rotation from this site: 	
@@ -165,6 +205,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
         }
         else
 		{
+
         }
     }
 }

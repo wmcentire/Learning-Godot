@@ -24,6 +24,10 @@ properties/2/path = NodePath("CollisionShape3D/train_gun:didShoot")
 properties/2/spawn = true
 properties/2/sync = true
 properties/2/watch = false
+properties/3/path = NodePath(".:camFormUniversal")
+properties/3/spawn = true
+properties/3/sync = true
+properties/3/watch = false
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_lxcsy")
@@ -31,6 +35,7 @@ pathY = NodePath("CamPivotY")
 pathX = NodePath("")
 pathCam = NodePath("CamPivotY/SpringArm3D/Camera3D")
 physGun = NodePath("CollisionShape3D/train_gun")
+namePath = NodePath("Label3D")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_tot3b")
@@ -54,6 +59,11 @@ transform = Transform3D(1, 0, 0, 0, 0.949918, 0.312501, 0, -0.312501, 0.949918, 
 script = ExtResource("2_xa14i")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_interval = 0.05
-delta_interval = 0.05
+replication_interval = 0.015
+delta_interval = 0.015
 replication_config = SubResource("SceneReplicationConfig_8iial")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9841, 0)
+visible = false
+text = "test"

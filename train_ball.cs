@@ -5,6 +5,8 @@ public partial class train_ball : RigidBody3D , ILaunchable
 {
     [Export]
     private NodePath _path;
+    [Export]
+    private string lastTagged;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -15,10 +17,39 @@ public partial class train_ball : RigidBody3D , ILaunchable
 	{
 	}
 
-    public void Launch(Vector3 velocity)
+    // when it hits a player
+    public void _on_body_entered(Node node)
     {
-        GD.Print("LLAUNCHED");
-        //RigidBody3D rb = GetNode<RigidBody3D>(_path);
+        GD.Print("COLLISION");
+        // check the velocity of self
+        if(this.LinearVelocity.Length() > 15f)
+        {
+            // check to see if it hit the player
+            CharacterBody3D player = node as CharacterBody3D;
+            if(player != null)
+            {
+                // player.damage(lastTagged);       // IMPLEMENT DAMAGE FUNC IN PLAYER
+                GD.Print("Player " + player.Name + " was damaged by " + lastTagged);
+            }
+        }
+        train_ball tb = node as train_ball;
+        if(tb != null)
+        {
+            tb.lastTagged = lastTagged;
+            GD.Print("Transfered tag " + lastTagged);
+        }
+    }
+
+    public void _on_body_shape_entered(Rid body_rid, Node body, int body_shape_index, int local_shape_index)
+    {
+        GD.Print("COLLISION");
+
+    }
+
+    public void Launch(Vector3 velocity, string id)
+    {
+        GD.Print("LLAUNCHED BY: " + id);
+        lastTagged = id;
         ApplyCentralImpulse(velocity);
     }
     /// <summary>

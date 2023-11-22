@@ -15,9 +15,10 @@ public partial class tLauncher : Node3D, IWeapon
 	private Node3D shotLoc;
 	[Export]
 	public bool didShoot = false; // allows gun to shoot across multiplayer sessions
-
+	public string pID;
     private float reloading = 0;
 	private bool readyToFire = true;
+	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -54,10 +55,10 @@ public partial class tLauncher : Node3D, IWeapon
 			readyToFire = false;
 			reloading = reloadTime;
 			//Shot.Instantiate<Node3D>();
-			Area3D shot = Shot.Instantiate<Area3D>(); // enables hitbox
+			phys_hit shot = Shot.Instantiate<phys_hit>(); // enables hitbox
 			GetTree().Root.AddChild(shot);
 			shot.GlobalTransform = shotLoc.GlobalTransform;
-			
+			shot.id = pID;
         }
         else
 		{
@@ -72,5 +73,10 @@ public partial class tLauncher : Node3D, IWeapon
     public void setShoot(bool shoot)
     {
         didShoot = shoot;
+    }
+
+    public void setPID(string pID)
+    {
+        this.pID = pID;
     }
 }
