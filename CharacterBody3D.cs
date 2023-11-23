@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class CharacterBody3D : Godot.CharacterBody3D
+public partial class CharacterBody3D : Godot.CharacterBody3D //  I AM VERY SORRY ABOUT THE NAME
 {
 	private float Speed = 10.0f;
 	[Export] public float walkSpeed = 7.0f;
@@ -22,6 +22,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 	private IWeapon phys_gun;
 	private Label3D nameTag;
 	private float IFrames = 0;
+	public PlayerState plrstt;
 
 	// relative pathways
     [Export] private NodePath pathY;
@@ -48,6 +49,12 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 	private Vector3 syncRot = new Vector3(0,0,0);
     private Vector3 camFormUniversal = new Vector3(0,0,0);
 
+	public enum PlayerState
+	{
+		Alive,
+		Spectating, // probably used later on
+		Dead
+	}
 
     public void SetName(string Name)
 	{
@@ -78,7 +85,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 
 		Input.MouseMode = Input.MouseModeEnum.Captured;
 
-		
+		plrstt = PlayerState.Alive;
 
 
         Speed = walkSpeed;
@@ -107,16 +114,22 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 		{
 			IFrames = IFrameLen;
 			GD.Print("Invincibility Frames set to " + IFrames);
-			GD.Print("Player " + this.Name + " was damaged by " + id + " for " + damage + " damage!");
 
 			health -= damage;
+			GD.Print("Player " + this.Name + " was damaged by " + id + " and has " + health + " health remaining!");
 			if (health <= 0)
 			{
 				if(id != this.Name)
 				{
+					GD.Print("hit by another");
                     Rpc("AddPoints", id);
 
-                }
+				}
+				else
+				{
+					GD.Print("hit by self");
+				}
+				plrstt = PlayerState.Dead;
             }
 		}
 		else
@@ -199,13 +212,13 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
 
 	// putting all the non-physics stuff that generally needs to be dealt with in here
     public override void _Process(double delta)
-    {
-		
+    {		
 		if(IFrames > 0)
 		{
 			IFrames -= (float)delta;
-			GD.Print(IFrames);
+			//GD.Print(IFrames);
 		}
+		
     }
 
     // Change direction based on mouse movements
@@ -240,9 +253,18 @@ public partial class CharacterBody3D : Godot.CharacterBody3D
         }
     }
 
+	// RPC METHODS
+
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
 	public void AddPoints(string id)
 	{
 		game_manager.AddPoints(id);
 	}
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+	public void PlayerDeath()
+	{
+		
+	}
+
 }

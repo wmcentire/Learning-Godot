@@ -42,13 +42,13 @@ public partial class game_manager : Node
 
     public static void AddPoints(string id)
     {
-        GD.Print("Game Manager adding points");
+        //GD.Print("Game Manager adding points");
         foreach(player_info p in Players)
         {
             if(id == p.Id.ToString())
             {
                 p.points++;
-                GD.Print("Player " + id + " gained a point.");
+                //GD.Print("Player " + id + " gained a point.");
             }
         }
     }
