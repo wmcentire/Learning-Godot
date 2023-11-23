@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
 
 public partial class game_manager : Node
@@ -38,6 +39,34 @@ public partial class game_manager : Node
             }
 
         }
+    }
+
+    public static int GetPointCount(string id)
+    {
+        GD.Print("Game Manager getting points");
+        foreach (player_info p in Players)
+        {
+            if (id == p.Id.ToString())
+            {
+                return p.points;
+                //GD.Print("Player " + id + " gained a point.");
+            }
+        }
+        throw new Exception("No Matching IDs for id of " + id);
+    }
+
+    public static int GetDeathCount(string id)
+    {
+        GD.Print("Game Manager getting deaths");
+        foreach (player_info p in Players)
+        {
+            if (id == p.Id.ToString())
+            {
+                return p.deaths;
+                //GD.Print("Player " + id + " gained a point.");
+            }
+        }
+        throw new Exception("No Matching IDs for id of " + id);
     }
 
     public static void AddPoints(string id)
