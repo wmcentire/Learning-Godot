@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 public partial class multiplayerControl : Control
 {
@@ -46,6 +47,8 @@ public partial class multiplayerControl : Control
     private void PeerDisconnected(long id)
     {
         GD.Print("PLAYER DISCONNECTED: " + id);
+        game_manager.Players.Remove((player_info)game_manager.Players.Where(i => i.Id == id));
+
     }
     /// <summary>
     /// Runs when a player connects and runs on all peers
