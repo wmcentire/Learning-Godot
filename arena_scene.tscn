@@ -57,3 +57,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.444095, -8.48017, -1.4631)
 
 [node name="train_ball4" parent="." instance=ExtResource("4_dogo5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.03914, -8.14123, 14.0206)
+
+[node name="PlayerHud" type="CanvasLayer" parent="."]
+
+[node name="HudDisp" type="Control" parent="PlayerHud"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0

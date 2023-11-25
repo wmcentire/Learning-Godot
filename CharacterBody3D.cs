@@ -37,12 +37,12 @@ public partial class CharacterBody3D : Godot.CharacterBody3D //  I AM VERY SORRY
 	private string dispname;
     [Export]
     private int health;
-    //[Export]
-    //private int score;
-    //[Export]
-    //private int kills;
-    //[Export]
-    //private int deaths;
+    [Export]
+    private int score;
+    [Export]
+    private int kills;
+    [Export]
+    private int deaths;
 
 	// synced positions
 	private Vector3 syncPos = new Vector3(0,0,0);

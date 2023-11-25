@@ -52,6 +52,15 @@ public partial class Scene_Manager : Node
 
     }
 
+    private CharacterBody3D getPNodeById(string id)
+    {
+        foreach (var item in players)
+        {
+            if (item.Name == id) return item;
+        }
+        throw new Exception("No matching player info found for id: " + id);
+    }
+
     /// <summary>
     /// Searches the Players list in game_manager for a player_info that has the given id
     /// </summary>
@@ -78,13 +87,18 @@ public partial class Scene_Manager : Node
         player_info temp = getPInfoById(id);
         if(temp != null)
         {
-            CharacterBody3D currentPlayer = playerScene.Instantiate<CharacterBody3D>();
-            currentPlayer.Name = temp.Id.ToString(); // giving the player a multiplayer id
+            //CharacterBody3D currentPlayer = playerScene.Instantiate<CharacterBody3D>();
+            //currentPlayer.Name = temp.Id.ToString(); // giving the player a multiplayer id
 
-            currentPlayer.SetName(temp.name); // setting the display name
+            //currentPlayer.SetName(temp.name); // setting the display name
 
-            AddChild(currentPlayer);
-            players.Add(currentPlayer);
+            //AddChild(currentPlayer);
+            //players.Add(currentPlayer);
+            //  /\ OLD STUFF /\
+
+            CharacterBody3D player = getPNodeById(id);
+            player.Hide();
+            temp.deaths++;
         }
         else
         {
@@ -102,7 +116,11 @@ public partial class Scene_Manager : Node
     {
         GD.Print("Attempting to kill player " + id);
         player_info temp = getPInfoById(id);
-
+        if(temp != null )
+        {
+            CharacterBody3D player = getPNodeById(id);
+            player.
+        }
     }
     /// <summary>
     /// Checks the PlayerState of every player instance stored in the players list
