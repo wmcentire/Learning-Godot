@@ -14,6 +14,7 @@ data = PackedVector3Array(-4.5332, 4.5332, 4.5332, -4.5332, 4.5332, -4.5332, -4.
 [node name="ArenaScene" type="Node"]
 script = ExtResource("1_vdjia")
 playerScene = ExtResource("2_0owut")
+deathLocPath = NodePath("PlayerSpawnPoints/DeathLocation")
 
 [node name="Arena" type="Node3D" parent="."]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
@@ -42,6 +43,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0)
 
 [node name="1" type="Node3D" parent="PlayerSpawnPoints" groups=["PlayerSpawnPoints"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 0)
+
+[node name="2" type="Node3D" parent="PlayerSpawnPoints" groups=["PlayerSpawnPoints"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -15)
+
+[node name="3" type="Node3D" parent="PlayerSpawnPoints" groups=["PlayerSpawnPoints"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 13)
+
+[node name="4" type="Node3D" parent="PlayerSpawnPoints" groups=["PlayerSpawnPoints"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 13)
+
+[node name="DeathLocation" type="Node3D" parent="PlayerSpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 14, 0)
 
 [node name="train_ball" parent="." instance=ExtResource("4_dogo5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.137914, -8.48017, -9.19515)

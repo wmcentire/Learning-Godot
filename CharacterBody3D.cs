@@ -37,17 +37,14 @@ public partial class CharacterBody3D : Godot.CharacterBody3D //  I AM VERY SORRY
 	private string dispname;
     [Export]
     private int health;
-    [Export]
-    private int score;
-    [Export]
-    private int kills;
-    [Export]
-    private int deaths;
+	[Export]
+	private int maxHealth = 100;
 
-	// synced positions
+	// synced values
 	private Vector3 syncPos = new Vector3(0,0,0);
 	private Vector3 syncRot = new Vector3(0,0,0);
     private Vector3 camFormUniversal = new Vector3(0,0,0);
+	private int syncHealth;
 
 	public enum PlayerState
 	{
@@ -87,6 +84,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D //  I AM VERY SORRY
 
 		plrstt = PlayerState.Alive;
 
+		health = maxHealth;
 
         Speed = walkSpeed;
         if (GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer").GetMultiplayerAuthority() == Multiplayer.GetUniqueId())
@@ -113,7 +111,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D //  I AM VERY SORRY
 		if (IFrames <= 0)
 		{
 			IFrames = IFrameLen;
-			GD.Print("Invincibility Frames set to " + IFrames);
+			//GD.Print("Invincibility Frames set to " + IFrames);
 
 			health -= damage;
 			GD.Print("Player " + this.Name + " was damaged by " + id + " and has " + health + " health remaining!");
@@ -134,11 +132,16 @@ public partial class CharacterBody3D : Godot.CharacterBody3D //  I AM VERY SORRY
 		}
 		else
 		{
-			GD.Print("Invincible for " + IFrames + " seconds");
+			//GD.Print("Invincible for " + IFrames + " seconds");
 		}
 	}
 
-    
+    public void RespawnPlayer(Vector3 spawnLoc)
+	{
+		health = maxHealth;
+		GlobalPosition = spawnLoc;
+		plrstt = PlayerState.Alive;
+	}
 
     // Get the gravity from the project settings to be synced with RigidBody nodes.
     public float gravity = 19.8f;
@@ -146,53 +149,60 @@ public partial class CharacterBody3D : Godot.CharacterBody3D //  I AM VERY SORRY
 	// this is where the player movement and other physics is kept
 	public override void _PhysicsProcess(double delta)
 	{
+		// checks to see if the player node matches the player session
 		if(GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer").GetMultiplayerAuthority() == Multiplayer.GetUniqueId())
 		{
-			float actlSpd = Speed;
-			Vector3 velocity = Velocity;
-		
-			// Add the gravity.
-			if (!IsOnFloor())
-				velocity.Y -= gravity * (float)delta;
-
-			// Handle Jump.
-			if (Input.IsActionJustPressed("pl_jmp") && IsOnFloor())
-				velocity.Y = JumpVelocity;
-
-			// Get the input direction and handle the movement/deceleration.
-			// As good practice, you should replace UI actions with custom gameplay actions.
-			Vector2 inputDir = Input.GetVector("pl_mv_lft", "pl_mv_rht", "pl_mv_fwd", "pl_mv_bck");
-			Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
-			// REPLACE ABOVE WITH NEW WAY TO GET DIRECTION STUFF
-
-			if (Input.IsActionPressed("pl_rt_cm"))
+			if (plrstt == PlayerState.Alive)  // checks to make sure player is alive
 			{
 
-			}
 
-			if (Input.IsActionPressed("pl_sht"))
-			{
-				phys_gun.setShoot(true);
-			}
+				float actlSpd = Speed;
+				Vector3 velocity = Velocity;
 
-			if (direction != Vector3.Zero)
-			{
-				if(IsOnFloor() && Input.IsActionPressed("pl_mv_sld")) actlSpd = slideSpeed;
-				velocity.X = direction.X * actlSpd ;
-				velocity.Z = direction.Z * actlSpd ;
-			}
-			else
-			{
-				if(IsOnFloor() && Input.IsActionPressed("pl_mv_sld")) actlSpd = slideSpeed;
-				velocity.X = Mathf.MoveToward(Velocity.X, 0, actlSpd );
-				velocity.Z = Mathf.MoveToward(Velocity.Z, 0, actlSpd );
-			}
+				// Add the gravity.
+				if (!IsOnFloor())
+					velocity.Y -= gravity * (float)delta;
 
-			Velocity = velocity;
-			MoveAndSlide();
-			syncPos = GlobalPosition;
-            syncRot = GlobalRotation;
-			camFormUniversal = camForm;
+				// Handle Jump.
+				if (Input.IsActionJustPressed("pl_jmp") && IsOnFloor())
+					velocity.Y = JumpVelocity;
+
+				// Get the input direction and handle the movement/deceleration.
+				// As good practice, you should replace UI actions with custom gameplay actions.
+				Vector2 inputDir = Input.GetVector("pl_mv_lft", "pl_mv_rht", "pl_mv_fwd", "pl_mv_bck");
+				Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
+				// REPLACE ABOVE WITH NEW WAY TO GET DIRECTION STUFF
+
+				if (Input.IsActionPressed("pl_rt_cm"))
+				{
+
+				}
+
+				if (Input.IsActionPressed("pl_sht"))
+				{
+					phys_gun.setShoot(true);
+				}
+
+				if (direction != Vector3.Zero)
+				{
+					if (IsOnFloor() && Input.IsActionPressed("pl_mv_sld")) actlSpd = slideSpeed;
+					velocity.X = direction.X * actlSpd;
+					velocity.Z = direction.Z * actlSpd;
+				}
+				else
+				{
+					if (IsOnFloor() && Input.IsActionPressed("pl_mv_sld")) actlSpd = slideSpeed;
+					velocity.X = Mathf.MoveToward(Velocity.X, 0, actlSpd);
+					velocity.Z = Mathf.MoveToward(Velocity.Z, 0, actlSpd);
+				}
+
+				Velocity = velocity;
+				MoveAndSlide();
+				syncPos = GlobalPosition;
+				syncRot = GlobalRotation;
+				camFormUniversal = camForm;
+				syncHealth = health;
+			}
         }
         else
 		{
@@ -200,6 +210,8 @@ public partial class CharacterBody3D : Godot.CharacterBody3D //  I AM VERY SORRY
 			GlobalPosition = GlobalPosition.Lerp(syncPos,.5f);
             GlobalRotation = GlobalRotation.Lerp(syncRot, .5f);
 			camForm = camForm.Lerp(camFormUniversal,.5f);
+			health = syncHealth;
+
 
 			// nametags always facing player
 			//Vector3 tagDir = camForm - nameTag.GlobalPosition;

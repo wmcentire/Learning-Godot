@@ -28,7 +28,7 @@ properties/3/path = NodePath(".:camFormUniversal")
 properties/3/spawn = true
 properties/3/sync = true
 properties/3/watch = false
-properties/4/path = NodePath(".:health")
+properties/4/path = NodePath(".:syncHealth")
 properties/4/spawn = true
 properties/4/sync = true
 properties/4/watch = false
@@ -42,6 +42,7 @@ pathCam = NodePath("CamPivotY/SpringArm3D/Camera3D")
 physGun = NodePath("CollisionShape3D/train_gun")
 namePath = NodePath("Label3D")
 health = 100
+maxHealth = 30
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_tot3b")

@@ -9,12 +9,16 @@ public partial class Scene_Manager : Node
 	private PackedScene playerScene;
     [Export]
     private float respawnTime;
+    [Export]
+    private NodePath deathLocPath;
+    private Node3D deathLoc;
 
     private List<CharacterBody3D> players;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
         spawnPlayers();
+        deathLoc = GetNode<Node3D>(deathLocPath);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -61,6 +65,14 @@ public partial class Scene_Manager : Node
         throw new Exception("No matching player info found for id: " + id);
     }
 
+    private Node3D getRandSpawn()
+    {
+        var rand = new Random();
+        int index = rand.Next(GetTree().GetNodesInGroup("PlayerSpawnPoints").Count);
+        Godot.Collections.Array<Godot.Node> treeArray = GetTree().GetNodesInGroup("PlayerSpawnPoints");
+        return (Node3D)treeArray[index];
+    }
+
     /// <summary>
     /// Searches the Players list in game_manager for a player_info that has the given id
     /// </summary>
@@ -81,24 +93,15 @@ public partial class Scene_Manager : Node
     /// if there is a matching id in the list of playerInfo stored inside of game_manager
     /// </summary>
     /// <param name="id"></param>
-    public void spawnPlayer(string id)
+    public void spawnPlayerById(string id)
     {
         GD.Print("Attempting to spawn player " + id);
         player_info temp = getPInfoById(id);
         if(temp != null)
         {
-            //CharacterBody3D currentPlayer = playerScene.Instantiate<CharacterBody3D>();
-            //currentPlayer.Name = temp.Id.ToString(); // giving the player a multiplayer id
-
-            //currentPlayer.SetName(temp.name); // setting the display name
-
-            //AddChild(currentPlayer);
-            //players.Add(currentPlayer);
-            //  /\ OLD STUFF /\
-
             CharacterBody3D player = getPNodeById(id);
-            player.Hide();
-            temp.deaths++;
+            player.Show();
+            player.RespawnPlayer(getRandSpawn().GlobalPosition);
         }
         else
         {
@@ -112,16 +115,38 @@ public partial class Scene_Manager : Node
     /// Takes a player id, and kills the player with matching id
     /// </summary>
     /// <param name="id"></param>
-    public void killPlayer(string id)
+    public void killPlayerById(string id)
     {
         GD.Print("Attempting to kill player " + id);
         player_info temp = getPInfoById(id);
         if(temp != null )
         {
             CharacterBody3D player = getPNodeById(id);
-            player.
+            player.Hide();
+            temp.deaths++;
+            player.plrstt = CharacterBody3D.PlayerState.Spectating;
+            player.GlobalPosition = deathLoc.GlobalPosition;
         }
     }
+
+    /// <summary>
+    /// Takes a player and "kills" it
+    /// </summary>
+    /// <param name="player"></param>
+    [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+    public void killPlayer(CharacterBody3D player)
+    {
+        GD.Print("Attempting to kill player " + player.Name);
+        player_info temp = getPInfoById(player.Name);
+        if (temp != null)
+        {
+            player.Hide();
+            temp.deaths++;
+            player.plrstt = CharacterBody3D.PlayerState.Spectating;
+            player.GlobalPosition = deathLoc.GlobalPosition;
+        }
+    }
+
     /// <summary>
     /// Checks the PlayerState of every player instance stored in the players list
     /// </summary>
@@ -137,10 +162,16 @@ public partial class Scene_Manager : Node
                     //GD.Print(player.Name + " is alive!");
                     break;
                 case CharacterBody3D.PlayerState.Dead:
-                    GD.Print(player.Name + " DIED!!!!");
+                    //GD.Print(player.Name + " DIED!!!!");
+                    //Rpc("killPlayerById", player.Name);
+                    killPlayer(player);
                     break;
-                case CharacterBody3D.PlayerState.Spectating: 
-                    
+                case CharacterBody3D.PlayerState.Spectating:
+                    //GD.Print(player.Name + "spectating");
+                    if (Input.IsActionJustPressed("pl_rspwn"))
+                    {
+                        spawnPlayerById(player.Name);
+                    }
                     break;
 
             }
