@@ -23,6 +23,8 @@ public partial class CharacterBody3D : Godot.CharacterBody3D //  I AM VERY SORRY
 	private Label3D nameTag;
 	private float IFrames = 0;
 	public PlayerState plrstt;
+	public bool IsAuth = false;
+	private CollisionShape3D collisions;
 
 	// relative pathways
     [Export] private NodePath pathY;
@@ -31,6 +33,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D //  I AM VERY SORRY
 	[Export] private NodePath pathMesh;
 	[Export] private NodePath physGun;
 	[Export] private NodePath namePath;
+	[Export] private NodePath colPath;
 
 	// gameplay values
 	[Export]
@@ -45,12 +48,14 @@ public partial class CharacterBody3D : Godot.CharacterBody3D //  I AM VERY SORRY
 	private Vector3 syncRot = new Vector3(0,0,0);
     private Vector3 camFormUniversal = new Vector3(0,0,0);
 	private int syncHealth;
+	
 
 	public enum PlayerState
 	{
 		Alive,
 		Spectating, // probably used later on
-		Dead
+		Dead,
+		Respawning
 	}
 
     public void SetName(string Name)
@@ -58,15 +63,26 @@ public partial class CharacterBody3D : Godot.CharacterBody3D //  I AM VERY SORRY
 		dispname = Name;
 	}
 
+	public int GetHealthVal()
+	{
+		return health;
+	}
+
+	public int GetMaxHealthVal()
+	{
+		return maxHealth;
+	}
+
 	public override void _Ready()
 	{
-		// THIS PART IS BROKEN
-		// PLEASE FIX
+		
 		GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer").SetMultiplayerAuthority(int.Parse(Name));
 
+		// getting objects from paths
 		camPivotY = GetNode<Node3D>(pathY);
 //		camPivotX = GetNode<Node3D>(pathX);
 		camera = GetNode<Camera3D>(pathCam);
+		collisions = GetNode<CollisionShape3D>(colPath);
         phys_gun = (IWeapon)GetNode<tLauncher>(physGun);
 		phys_gun.setPID(Name);
 
@@ -91,6 +107,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D //  I AM VERY SORRY
 		{
 			camera.MakeCurrent();
 			//nameTag.Hide();
+			IsAuth = true;
             camForm = new Vector3(camera.GlobalPosition.X, camera.GlobalPosition.Y, camera.GlobalPosition.Z);
 
         }
@@ -100,39 +117,35 @@ public partial class CharacterBody3D : Godot.CharacterBody3D //  I AM VERY SORRY
 
 	public void playerDamage(int damage, string id)
 	{
-		// testing
-		//if(id != this.Name)
-		//{
-		//          Rpc("AddPoints", id);
-
-		//}
-
-		// \/ intended \/
-		if (IFrames <= 0)
+		//if (plrstt != PlayerState.Alive)
 		{
-			IFrames = IFrameLen;
-			//GD.Print("Invincibility Frames set to " + IFrames);
-
-			health -= damage;
-			GD.Print("Player " + this.Name + " was damaged by " + id + " and has " + health + " health remaining!");
-			if (health <= 0)
+			if (IFrames <= 0)
 			{
-				if(id != this.Name)
-				{
-					GD.Print("hit by another");
-                    Rpc("AddPoints", id);
+				IFrames = IFrameLen;
+				//GD.Print("Invincibility Frames set to " + IFrames);
 
-				}
-				else
+				health -= damage;
+				GD.Print("Player " + this.Name + " was damaged by " + id + " and has " + health + " health remaining!");
+				if (health <= 0)
 				{
-					GD.Print("hit by self");
+					health = 0;
+					if (id != this.Name)
+					{
+						GD.Print("hit by another");
+						Rpc("AddPoints", id);
+						//AddPoints(id);
+					}
+					else
+					{
+						GD.Print("hit by self");
+					}
+					plrstt = PlayerState.Dead;
 				}
-				plrstt = PlayerState.Dead;
-            }
-		}
-		else
-		{
-			//GD.Print("Invincible for " + IFrames + " seconds");
+			}
+			else
+			{
+				//GD.Print("Invincible for " + IFrames + " seconds");
+			}
 		}
 	}
 
@@ -141,6 +154,15 @@ public partial class CharacterBody3D : Godot.CharacterBody3D //  I AM VERY SORRY
 		health = maxHealth;
 		GlobalPosition = spawnLoc;
 		plrstt = PlayerState.Alive;
+		CollisionStateSwitch();
+	}
+
+	// disables and enables the collision shape
+	public void CollisionStateSwitch()
+	{
+		//if(GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer").GetMultiplayerAuthority() == Multiplayer.GetUniqueId())
+
+		collisions.Disabled = !collisions.Disabled;
 	}
 
     // Get the gravity from the project settings to be synced with RigidBody nodes.
@@ -202,6 +224,7 @@ public partial class CharacterBody3D : Godot.CharacterBody3D //  I AM VERY SORRY
 				syncRot = GlobalRotation;
 				camFormUniversal = camForm;
 				syncHealth = health;
+
 			}
         }
         else

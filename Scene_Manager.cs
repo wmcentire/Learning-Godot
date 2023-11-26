@@ -1,24 +1,36 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Security;
 using System.Security.Cryptography.X509Certificates;
 
 public partial class Scene_Manager : Node
 {
+    // exports
 	[Export]
 	private PackedScene playerScene;
     [Export]
     private float respawnTime;
     [Export]
     private NodePath deathLocPath;
+    [Export]
+    private NodePath hpBarPath;
+    [Export]
+    private NodePath pointDispPath;
+
+    private ProgressBar hpBar;
+    private Label pointDisp;
     private Node3D deathLoc;
+    private string plrAuthId;
 
     private List<CharacterBody3D> players;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-        spawnPlayers();
+        hpBar = GetNode<ProgressBar>(hpBarPath);
         deathLoc = GetNode<Node3D>(deathLocPath);
+        pointDisp = GetNode<Label>(pointDispPath);
+        spawnPlayers();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -50,9 +62,16 @@ public partial class Scene_Manager : Node
                 {
                     currentPlayer.GlobalPosition = spawnPoint.GlobalPosition;
                 }
+                if (currentPlayer.IsAuth)
+                {
+                    plrAuthId = currentPlayer.Name;
+                    hpBar.MaxValue = currentPlayer.GetMaxHealthVal();
+                    DisplayServer.WindowSetTitle(plrAuthId);
+                }
             }
             index++;
         }
+        
 
     }
 
@@ -133,18 +152,23 @@ public partial class Scene_Manager : Node
     /// Takes a player and "kills" it
     /// </summary>
     /// <param name="player"></param>
-    [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
     public void killPlayer(CharacterBody3D player)
     {
         GD.Print("Attempting to kill player " + player.Name);
         player_info temp = getPInfoById(player.Name);
         if (temp != null)
         {
+            player.CollisionStateSwitch();
             player.Hide();
             temp.deaths++;
             player.plrstt = CharacterBody3D.PlayerState.Spectating;
             player.GlobalPosition = deathLoc.GlobalPosition;
         }
+    }
+
+    public void setHpBar(int hp)
+    {
+        hpBar.Value = hp;
     }
 
     /// <summary>
@@ -168,12 +192,27 @@ public partial class Scene_Manager : Node
                     break;
                 case CharacterBody3D.PlayerState.Spectating:
                     //GD.Print(player.Name + "spectating");
-                    if (Input.IsActionJustPressed("pl_rspwn"))
+                    player.Hide();
+                    if (Input.IsActionJustPressed("pl_rspwn") && (player.Name == plrAuthId))
                     {
-                        spawnPlayerById(player.Name);
+                        player.plrstt = CharacterBody3D.PlayerState.Respawning;
                     }
+                    
+                    break;
+                case CharacterBody3D.PlayerState.Respawning:
+                    spawnPlayerById(player.Name);
+
                     break;
 
+            }
+            if(player.Name == plrAuthId)
+            {
+                hpBar.Value = player.GetHealthVal();
+                player_info curPlr = getPInfoById(player.Name);
+                if (curPlr != null)
+                {
+                    pointDisp.Text = "Points: " + curPlr.points;
+                }
             }
         }
     }
