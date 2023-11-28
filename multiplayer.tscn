@@ -1,14 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://c4ra0t1iyaas0"]
+[gd_scene load_steps=3 format=3 uid="uid://c4ra0t1iyaas0"]
 
+[ext_resource type="Script" path="res://ServerBrowser.cs" id="2_1ecei"]
 [ext_resource type="Script" path="res://multiplayerControl.cs" id="2_wiwmf"]
 
 [node name="Multiplayer" type="Node"]
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("2_wiwmf")
 
 [node name="Net" type="VBoxContainer" parent="UI"]
@@ -52,6 +55,63 @@ layout_mode = 2
 placeholder_text = "Name"
 expand_to_text_length = true
 
+[node name="ServerBrowser" type="Control" parent="UI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_1ecei")
+
+[node name="BroadcastTimer" type="Timer" parent="UI/ServerBrowser"]
+
+[node name="Panel" type="Panel" parent="UI/ServerBrowser"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 9.0
+offset_top = 76.0
+offset_right = -629.0
+offset_bottom = -267.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="HBoxContainer" parent="UI/ServerBrowser/Panel"]
+layout_mode = 2
+offset_right = 514.0
+offset_bottom = 31.0
+
+[node name="Name" type="Label" parent="UI/ServerBrowser/Panel/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Server Name"
+
+[node name="Ip" type="Label" parent="UI/ServerBrowser/Panel/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "IP Address"
+
+[node name="PlayerCount" type="Label" parent="UI/ServerBrowser/Panel/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "PlayerCount"
+
+[node name="PlayerCount2" type="Label" parent="UI/ServerBrowser/Panel/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/ServerBrowser/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 35.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [connection signal="button_down" from="UI/Net/Options/Host" to="UI" method="_on_host_button_down"]
 [connection signal="button_down" from="UI/Net/Options/Join" to="UI" method="_on_join_button_down"]
 [connection signal="button_down" from="UI/Net/Options/StartGame" to="UI" method="_on_start_game_button_down"]
+[connection signal="timeout" from="UI/ServerBrowser/BroadcastTimer" to="UI/ServerBrowser" method="_on_broadcast_timer_timeout"]
