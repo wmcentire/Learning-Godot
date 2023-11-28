@@ -8,8 +8,8 @@ namespace LearningGodot
 {
     public class ServerInfo
     {
-        public string Name;
-        public int PlayerCount;
+        public string Name { get; set; }
+        public int PlayerCount { get; set; }
 
     }
 }

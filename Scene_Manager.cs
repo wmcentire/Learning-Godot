@@ -75,6 +75,27 @@ public partial class Scene_Manager : Node
 
     }
 
+    /// <summary>
+    /// removes player from the list of players
+    /// </summary>
+    /// <param name="playerId"></param>
+    public void RemovePlayer(string playerId)
+    {
+        foreach(var player in players)
+        {
+            if (player.Name == playerId)
+            {
+                players.Remove(player);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Returns a player node based off of the id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     private CharacterBody3D getPNodeById(string id)
     {
         foreach (var item in players)
@@ -84,6 +105,10 @@ public partial class Scene_Manager : Node
         throw new Exception("No matching player info found for id: " + id);
     }
 
+    /// <summary>
+    /// Selects a random spawnpoint from the list of spawnpoints
+    /// </summary>
+    /// <returns></returns>
     private Node3D getRandSpawn()
     {
         var rand = new Random();

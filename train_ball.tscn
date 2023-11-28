@@ -1,14 +1,13 @@
 [gd_scene load_steps=7 format=3 uid="uid://b1l7g32p2pgdy"]
 
 [ext_resource type="Script" path="res://train_ball.cs" id="1_7hkxr"]
+[ext_resource type="ArrayMesh" uid="uid://v4twjoexwmt4" path="res://Train Prop.obj" id="2_15ugg"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_v6po3"]
 friction = 0.3
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_kc8am"]
-size = Vector3(3.99747, 1.44474, 1.9951)
-
-[sub_resource type="BoxMesh" id="BoxMesh_twlpo"]
+size = Vector3(4.91618, 2.70941, 1.9951)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ndf00"]
 albedo_color = Color(0.603922, 0.172549, 0.823529, 1)
@@ -27,6 +26,7 @@ properties/1/watch = false
 collision_layer = 7
 collision_mask = 7
 physics_material_override = SubResource("PhysicsMaterial_v6po3")
+gravity_scale = 1.8
 max_contacts_reported = 10
 contact_monitor = true
 script = ExtResource("1_7hkxr")
@@ -36,8 +36,8 @@ minDmgVel = 10.0
 shape = SubResource("BoxShape3D_kc8am")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(4, 0, 0, 0, 1.45, 0, 0, 0, 2, 0, 0, 0)
-mesh = SubResource("BoxMesh_twlpo")
+transform = Transform3D(-8.74228e-08, 0, 2, 0, 2, 0, -2, 0, -8.74228e-08, -1.35036, -2.04189, -2.77687)
+mesh = ExtResource("2_15ugg")
 surface_material_override/0 = SubResource("StandardMaterial3D_ndf00")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]

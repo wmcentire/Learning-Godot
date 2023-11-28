@@ -1,6 +1,9 @@
-[gd_scene format=3 uid="uid://cspjv8slg7wvq"]
+[gd_scene load_steps=2 format=3 uid="uid://cspjv8slg7wvq"]
+
+[ext_resource type="Script" path="res://ServerBrowserInfoLine.cs" id="1_p2ydn"]
 
 [node name="ServerInfo" type="HBoxContainer"]
+script = ExtResource("1_p2ydn")
 
 [node name="Name" type="Label" parent="."]
 layout_mode = 2
@@ -21,3 +24,5 @@ text = "0"
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Join Server"
+
+[connection signal="button_down" from="JoinLan" to="." method="_on_join_lan_button_down"]
