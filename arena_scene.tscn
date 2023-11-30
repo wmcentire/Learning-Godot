@@ -1,8 +1,9 @@
-[gd_scene load_steps=11 format=3 uid="uid://b4k5kw1osbwc5"]
+[gd_scene load_steps=12 format=3 uid="uid://b4k5kw1osbwc5"]
 
 [ext_resource type="ArrayMesh" uid="uid://c2nx47pwfjg7l" path="res://shitty arena.obj" id="1_37unk"]
 [ext_resource type="Script" path="res://Scene_Manager.cs" id="1_vdjia"]
 [ext_resource type="PackedScene" uid="uid://d17wmvwaruscg" path="res://level.tscn" id="2_0owut"]
+[ext_resource type="PackedScene" uid="uid://dd7xmje4rhy75" path="res://level_music.tscn" id="3_2p0jj"]
 [ext_resource type="PackedScene" uid="uid://b1l7g32p2pgdy" path="res://train_ball.tscn" id="4_dogo5"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ty7kd"]
@@ -29,6 +30,9 @@ playerScene = ExtResource("2_0owut")
 deathLocPath = NodePath("PlayerSpawnPoints/DeathLocation")
 hpBarPath = NodePath("PlayerHud/HudDisp/HealthBar")
 pointDispPath = NodePath("PlayerHud/HudDisp/PointDisp/Points")
+
+[node name="AudioStreamPlayer" parent="." instance=ExtResource("3_2p0jj")]
+volume_db = -6.465
 
 [node name="Arena" type="Node3D" parent="."]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)

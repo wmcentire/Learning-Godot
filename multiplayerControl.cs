@@ -7,7 +7,7 @@ using System.Linq;
 public partial class multiplayerControl : Control
 {
     [Export]
-    private int PORT = 4433;
+    private int PORT = 8910;
     [Export]
     private string address = "127.0.0.1";
     private ENetMultiplayerPeer peer;
@@ -51,7 +51,13 @@ public partial class multiplayerControl : Control
     private void PeerDisconnected(long id)
     {
         GD.Print("PLAYER DISCONNECTED: " + id);
-        game_manager.Players.Remove((player_info)game_manager.Players.Where(i => i.Id == id));
+        foreach(var item in game_manager.Players)
+        {
+            if(item.name == id.ToString())
+            {
+                game_manager.Players.Remove(item);
+            }
+        }
         var player = GetTree().GetNodesInGroup("Player").ToList();
         foreach( var item in player)
         {

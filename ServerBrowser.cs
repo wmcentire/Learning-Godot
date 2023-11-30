@@ -16,7 +16,7 @@ public partial class ServerBrowser : Control
     [Export]
     int hostPort = 8912;
     [Export]
-    string broadcastAddress = "192.168.86.255";
+    string broadcastAddress; //= "192.168.86.255";
     [Export]
     PackedScene ServerInfo;
 
@@ -30,7 +30,10 @@ public partial class ServerBrowser : Control
     {
         broadcastTimer = GetNode<Timer>("BroadcastTimer");
         setupListener();
-
+        string[] addressPieces = Godot.IP.GetLocalAddresses()[3].Split('.',4);
+        GD.Print("found address: " + Godot.IP.GetLocalAddresses()[3]);
+        broadcastAddress = addressPieces[0]+"."+addressPieces[1]+"."+addressPieces[2]+".255";
+        GD.Print(broadcastAddress);
     }
 
     public override void _Process(double delta)

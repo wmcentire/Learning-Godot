@@ -14,7 +14,7 @@ albedo_color = Color(0, 0.741176, 0.505882, 0.494118)
 collision_layer = 2
 collision_mask = 2
 script = ExtResource("1_xlupo")
-force = 14.0
+force = 21.0
 instTime = 0.02
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

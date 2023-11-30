@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://q1n6cu41ilnl"
+path="res://.godot/imported/In the zone.wav-8650b2faa84ac8d6b04e03fb55cbae70.sample"
+
+[deps]
+
+source_file="res://In the zone.wav"
+dest_files=["res://.godot/imported/In the zone.wav-8650b2faa84ac8d6b04e03fb55cbae70.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=2
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0
