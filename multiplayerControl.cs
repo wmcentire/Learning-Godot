@@ -7,10 +7,11 @@ using System.Linq;
 public partial class multiplayerControl : Control
 {
     [Export]
-    private int PORT = 4433;
+    private int PORT = 8910;
     [Export]
     private string address = "127.0.0.1";
     private ENetMultiplayerPeer peer;
+
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -19,6 +20,8 @@ public partial class multiplayerControl : Control
         Multiplayer.PeerDisconnected += PeerDisconnected;
         Multiplayer.ConnectedToServer += ConnectedToServer;
         Multiplayer.ConnectionFailed += ConnectionFailed;
+
+        GetNode<ServerBrowser>("ServerBrowser").JoinGame += joinGame;
     }
 
     // Multiplayer Signals
@@ -48,8 +51,24 @@ public partial class multiplayerControl : Control
     private void PeerDisconnected(long id)
     {
         GD.Print("PLAYER DISCONNECTED: " + id);
-        game_manager.Players.Remove((player_info)game_manager.Players.Where(i => i.Id == id));
-
+        foreach(var item in game_manager.Players)
+        {
+            if(item.name == id.ToString())
+            {
+                game_manager.Players.Remove(item);
+            }
+        }
+        var player = GetTree().GetNodesInGroup("Player").ToList();
+        foreach( var item in player)
+        {
+            if(item.Name == id.ToString())
+            {
+                string name = item.Name;
+                item.QueueFree();
+                Scene_Manager sc = GetNode<Scene_Manager>("ArenaScene");
+                if (sc != null) sc.RemovePlayer(name);
+            }
+        }
     }
     /// <summary>
     /// Runs when a player connects and runs on all peers
@@ -83,7 +102,8 @@ public partial class multiplayerControl : Control
     [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
     private void StartGame()
     {
-        foreach(var item in game_manager.Players)
+        GetNode<ServerBrowser>("ServerBrowser").CleanUp();
+        foreach (var item in game_manager.Players)
         {
             GD.Print(item.name + " is playing");
         }
@@ -92,7 +112,7 @@ public partial class multiplayerControl : Control
         this.Hide();
     }
 
-    public void _on_host_button_down()
+    private void HostGame()
     {
         peer = new ENetMultiplayerPeer();
         var error = peer.CreateServer(PORT, 8);
@@ -106,13 +126,24 @@ public partial class multiplayerControl : Control
         Multiplayer.MultiplayerPeer = peer;
         GD.Print("WAITING FOR PLAYERS...");
 
+        GetNode<ServerBrowser>("ServerBrowser").SetupBroadcast(GetNode<LineEdit>("Net/NameCon/Name").Text + "'s Server");
+    }
+    public void _on_host_button_down()
+    {
+        HostGame();
+
         SendPlayerInfo(GetNode<LineEdit>("Net/NameCon/Name").Text, 1);
     }
 
     public void _on_join_button_down()
     {
+        joinGame(address);
+    }
+
+    private void joinGame(string ip)
+    {
         peer = new ENetMultiplayerPeer();
-        peer.CreateClient(address, PORT);
+        peer.CreateClient(ip, PORT);
 
         peer.Host.Compress(ENetConnection.CompressionMode.Fastlz);
         Multiplayer.MultiplayerPeer = peer;

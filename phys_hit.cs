@@ -26,22 +26,7 @@ public partial class phys_hit : Area3D
 
     private void _on_area_3d_body_entered(train_ball obj)
     {
-        // OLD SHIT IGNORE
-        // VERY SCARED TO REMOVE IN CASE IT BREAKS SOMETHING
-
-        //if (obj is train_ball)
-        //{
-        //    //	launch the train in a direction with calculations and shit
-        //    Vector3 velocity = new Vector3(0, 0, 0);
-        //    Vector3 objPos = obj.getGlobalLoc();
-        //    velocity = this.GlobalPosition - objPos;
-        //    velocity = velocity.Normalized();
-
-
-        //    // call function in train_ball, giving in a vector3 direction+magnitude
-        //    //obj.Launch(velocity);
-        //    this.QueueFree(); // destroys the phys_hit on contact with ILaunchable object
-        //}
+        
     }
 
     // hopefully THIS ONE works
@@ -51,7 +36,6 @@ public partial class phys_hit : Area3D
 
         if (reference != null)
         {
-            //GD.Print("ye");
             //	launch the train in a direction with calculations and shit
             Vector3 velocity = new Vector3(0, 0, 0);
             Vector3 objPos = reference.getGlobalLoc();
