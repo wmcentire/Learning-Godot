@@ -45,7 +45,7 @@ public partial class train_ball : RigidBody3D , ILaunchable
                 if (tb != null)
                 {
                     tb.lastTagged = lastTagged;
-                    //GD.Print("Transfered tag " + lastTagged);
+                    
                 }
             }
         }
@@ -61,7 +61,7 @@ public partial class train_ball : RigidBody3D , ILaunchable
 
     public void Launch(Vector3 velocity, string id)
     {
-        //GD.Print("LLAUNCHED BY: " + id);
+        
         lastTagged = id;
         ApplyCentralImpulse(velocity);
     }

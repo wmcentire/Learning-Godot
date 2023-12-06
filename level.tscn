@@ -37,7 +37,7 @@ properties/5/spawn = true
 properties/5/sync = true
 properties/5/watch = false
 
-[node name="Player" type="CharacterBody3D" groups=["Player"]]
+[node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_lxcsy")
 IFrameLen = 2.0
 pathY = NodePath("CamPivotY")

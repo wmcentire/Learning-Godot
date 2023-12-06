@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://ServerBrowser.cs" id="2_1ecei"]
 [ext_resource type="Script" path="res://multiplayerControl.cs" id="2_wiwmf"]
-[ext_resource type="PackedScene" uid="uid://cspjv8slg7wvq" path="res://server_info.tscn" id="3_dcxyp"]
+[ext_resource type="PackedScene" path="res://server_info.tscn" id="3_dcxyp"]
 
 [node name="Multiplayer" type="Node"]
 
